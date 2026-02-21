@@ -8,8 +8,10 @@ import org.jsoup.select.Elements;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Parser resiliente da tabela de movimentação.
@@ -33,23 +35,16 @@ public class HtmlParser {
         // Lista que será retornada no final
         List<NavioMovimentacao> movimentacoes = new ArrayList<>();
 
-        // Seleciona todas as tabelas da página
-        Elements tabelas = document.select("table");
+        // Encontrar a tabela de movimentação
+        Element tabela = encontrarTabelaMovimentacao(document);
 
-        // Se não houver tabela, retornamos lista vazia
-        if (tabelas.isEmpty()) {
-            return movimentacoes;
+        // Se não encontramos a tabela de movimentação, retornamos lista vazia
+        if (tabela == null) {
+            throw new IllegalStateException("Tabela de movimentação não encontrada");
         }
 
-        /*
-         * IMPORTANTE:
-         * Estamos assumindo que a primeira tabela é a que nos interessa.
-         * Se o site mudar isso, precisaremos melhorar essa lógica.
-         */
-        Element primeiraTabela = tabelas.first();
-
         // Seleciona todas as linhas da tabela
-        Elements linhas = primeiraTabela.select("tr");
+        Elements linhas = tabela.select("tr");
 
         // Se não houver linhas, retornamos lista vazia
         if (linhas.size() < 2) {
@@ -114,6 +109,42 @@ public class HtmlParser {
     }
 
     /**
+     * Busca a tabela de movimentação dentro do documento HTML.
+     * A estratégia é procurar por uma tabela que contenha as colunas essenciais.
+     * @param document
+     * @return
+     */
+    private Element encontrarTabelaMovimentacao(Document document) {
+
+        // Seleciona todas as tabelas da página
+        Elements tabelas = document.select("table");
+
+        for (Element tabela : tabelas) {
+
+            Elements headers = tabela.select("th");
+            
+            Set<String> nomes = new HashSet<>();
+
+            for (Element th : headers) {
+                nomes.add(normalizar(th.text()));
+            }
+
+            // Verificamos de contém todas as colunas essenciais
+            if (nomes.contains("data") &&
+                nomes.contains("horário") &&
+                nomes.contains("manobra") &&
+                nomes.contains("berço") &&
+                nomes.contains("navio") &&
+                nomes.contains("situação")) {
+                
+                return tabela;
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * Normaliza texto para evitar problemas com maiúsculas/minúsculas.
      */
     private String normalizar(String texto) {
@@ -132,22 +163,6 @@ public class HtmlParser {
         }
     }
 
-        /**
-     * Extrai valor da coluna dinamicamente pelo nome.
-     */
-    private String pegar(Elements colunas,
-                         Map<String, Integer> mapa,
-                         String nomeColuna) {
-
-        Integer indice = mapa.get(nomeColuna);
-
-        if (indice == null || indice >= colunas.size()) {
-            return "";
-        }
-
-        return colunas.get(indice).text().trim();
-    }
-    
     /**
      * Extrai valor da coluna dinamicamente pelo nome.
      */
