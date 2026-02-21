@@ -137,15 +137,15 @@ public class HtmlParser {
             }
 
             // Verificamos de contém todas as colunas essenciais
-            if (nomes.contains("data") &&
-                nomes.contains("horario") &&
-                nomes.contains("manobra") &&
-                nomes.contains("berco") &&
-                nomes.contains("navio") &&
-                nomes.contains("situacao")) {
-                
-                return tabela;
-            }
+            if (contemColuna(nomes, "data") &&
+                contemColuna(nomes, "horario") &&
+                contemColuna(nomes, "manobra") &&
+                contemColuna(nomes, "berco") &&
+                contemColuna(nomes, "navio") &&
+                contemColuna(nomes, "situacao")) {
+
+            return tabela;
+}
         }
 
         return null;
@@ -201,5 +201,14 @@ public class HtmlParser {
 
         return colunas.get(indice).text().trim();
     }
+
+    private boolean contemColuna(Set<String> nomes, String palavraChave) {
+    for (String nome : nomes) {
+        if (nome.contains(palavraChave)) {
+            return true;
+        }
+    }
+    return false;
+}
 
 }
