@@ -6,8 +6,12 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.text.Normalizer;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -25,6 +29,9 @@ import java.util.Set;
  */
 public class HtmlParser {
 
+    private static final Logger logger =
+        LoggerFactory.getLogger(HtmlParser.class);
+
     /**
      * Método principal do parser.
      *
@@ -32,6 +39,25 @@ public class HtmlParser {
      * @return Lista de movimentações encontradas
      */
     public List<NavioMovimentacao> parse(Document document) {
+
+        // Envolvemos tudo em um try/catch para garantir que falhas no parser não quebrem a aplicação
+        try {
+            return parseInterno(document);
+
+        } catch (IllegalStateException e) {
+            // Erros estruturais devem continuar propagando
+            throw e;
+
+        } catch (Exception e) {
+            logger.error("Erro ao processar HTML da praticagem", e);
+
+            // fallback seguro
+            return Collections.emptyList();
+        }
+    }
+
+    // Método interno que contém a lógica real de parsing. Separado para facilitar tratamento de erros.
+    private List<NavioMovimentacao> parseInterno(Document document) {
 
         // Lista que será retornada no final
         List<NavioMovimentacao> movimentacoes = new ArrayList<>();
@@ -41,6 +67,7 @@ public class HtmlParser {
 
         // Se não encontramos a tabela de movimentação, retornamos lista vazia
         if (tabela == null) {
+            logger.error("Tabela de movimentação não encontrada no HTML recebido");
             throw new IllegalStateException("Tabela de movimentação não encontrada");
         }
 
@@ -78,6 +105,11 @@ public class HtmlParser {
 
         if (idxData == null || idxHorario == null || idxManobra == null ||
             idxBerco == null || idxNavio == null || idxSituacao == null) {
+
+            logger.error(
+                "Mudança detectada na estrutura da tabela. Headers encontrados: {}",
+                indiceColunas.keySet()
+            );
 
             throw new IllegalStateException("Estrutura da tabela mudou.");
         }
@@ -203,12 +235,13 @@ public class HtmlParser {
     }
 
     private boolean contemColuna(Set<String> nomes, String palavraChave) {
-    for (String nome : nomes) {
-        if (nome.contains(palavraChave)) {
-            return true;
+        for (String nome : nomes) {
+            if (nome.contains(palavraChave)) {
+                return true;
+            }
         }
+
+        return false;
     }
-    return false;
-}
 
 }
