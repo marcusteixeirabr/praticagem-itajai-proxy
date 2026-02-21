@@ -69,12 +69,18 @@ public class HtmlParser {
          * Validamos se as colunas essenciais existem.
          * Se não existirem, falhamos de forma explícita.
          */
-        validarColuna(indiceColunas, "data");
-        validarColuna(indiceColunas, "horario");
-        validarColuna(indiceColunas, "manobra");
-        validarColuna(indiceColunas, "berco");
-        validarColuna(indiceColunas, "navio");
-        validarColuna(indiceColunas, "situacao");
+        Integer idxData = encontrarIndicePorPalavra(indiceColunas, "data");
+        Integer idxHorario = encontrarIndicePorPalavra(indiceColunas, "horario");
+        Integer idxManobra = encontrarIndicePorPalavra(indiceColunas, "manobra");
+        Integer idxBerco = encontrarIndicePorPalavra(indiceColunas, "berco");
+        Integer idxNavio = encontrarIndicePorPalavra(indiceColunas, "navio");
+        Integer idxSituacao = encontrarIndicePorPalavra(indiceColunas, "situacao");
+
+        if (idxData == null || idxHorario == null || idxManobra == null ||
+            idxBerco == null || idxNavio == null || idxSituacao == null) {
+
+            throw new IllegalStateException("Estrutura da tabela mudou.");
+        }
             
         /*
          * ===== PASSO 2: Ler linhas de dados =====
@@ -87,12 +93,12 @@ public class HtmlParser {
                 continue;
             }
 
-            String data = pegar(colunas, indiceColunas, "data");
-            String horario = pegar(colunas, indiceColunas, "horario");
-            String manobra = pegar(colunas, indiceColunas, "manobra");
-            String berco = pegar(colunas, indiceColunas, "berco");
-            String navio = pegar(colunas, indiceColunas, "navio");
-            String situacao = pegar(colunas, indiceColunas, "situacao");
+            String data = pegarPorIndice(colunas, idxData);
+            String horario = pegarPorIndice(colunas, idxHorario);
+            String manobra = pegarPorIndice(colunas, idxManobra);
+            String berco = pegarPorIndice(colunas, idxBerco);
+            String navio = pegarPorIndice(colunas, idxNavio);
+            String situacao = pegarPorIndice(colunas, idxSituacao);
 
             movimentacoes.add(
                 new NavioMovimentacao(
@@ -166,25 +172,28 @@ public class HtmlParser {
     }
 
     /**
-     * Garante que a coluna obrigatória existe.
-     * Se não existir, falha explicitamente.
+     * Procura o índice de uma coluna que contenha a palavra-chave.
+     * Exemplo: "situacao" vai casar com "situacao da manobra"
      */
-    private void validarColuna(Map<String, Integer> mapa, String coluna) {
-        if (!mapa.containsKey(coluna)) {
-            throw new IllegalStateException(
-                    "Coluna obrigatória não encontrada: " + coluna
-            );
+    private Integer encontrarIndicePorPalavra(Map<String, Integer> mapa,
+                                            String palavraChave) {
+
+        for (Map.Entry<String, Integer> entry : mapa.entrySet()) {
+
+            String nomeColuna = entry.getKey();
+
+            if (nomeColuna.contains(palavraChave)) {
+                return entry.getValue();
+            }
         }
+
+        return null;
     }
 
     /**
-     * Extrai valor da coluna dinamicamente pelo nome.
+     * Extrai valor de coluna dinamicamente pelo nome, usando índice já validado.
      */
-    private String pegar(Elements colunas,
-                         Map<String, Integer> mapa,
-                         String nomeColuna) {
-
-        Integer indice = mapa.get(nomeColuna);
+    private String pegarPorIndice(Elements colunas, Integer indice) {
 
         if (indice == null || indice >= colunas.size()) {
             return "";
