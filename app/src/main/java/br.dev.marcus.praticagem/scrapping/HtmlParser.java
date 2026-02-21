@@ -7,16 +7,18 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
- * Classe responsável por interpretar o HTML da página
- * e extrair as informações da tabela de movimentação.
+ * Parser resiliente da tabela de movimentação.
  *
- * Essa classe NÃO baixa o HTML.
- * Ela apenas recebe um Document já carregado.
- *
- * Separar responsabilidades é fundamental.
+ * Estratégia:
+ * 1) Localiza a tabela
+ * 2) Lê o cabeçalho (th)
+ * 3) Mapeia nome da coluna -> índice
+ * 4) Extrai dados usando o mapa
  */
 public class HtmlParser {
 
@@ -49,60 +51,117 @@ public class HtmlParser {
         // Seleciona todas as linhas da tabela
         Elements linhas = primeiraTabela.select("tr");
 
+        // Se não houver linhas, retornamos lista vazia
+        if (linhas.size() < 2) {
+            return movimentacoes;
+        }
+
         /*
-         * A primeira linha geralmente é o cabeçalho (<th>).
-         * Por isso começamos no índice 1.
+         * ===== PASSO 1: Mapear cabeçalho =====
+         */
+        Element headerRow = linhas.get(0);
+        Elements headers = headerRow.select("th");
+
+        Map<String, Integer> indiceColunas = new HashMap<>();
+
+        for (int i = 0; i < headers.size(); i++) {
+            String nomeColuna = normalizar(headers.get(i).text());
+            indiceColunas.put(nomeColuna, i);
+        }
+
+        /*
+         * Validamos se as colunas essenciais existem.
+         * Se não existirem, falhamos de forma explícita.
+         */
+        validarColuna(indiceColunas, "data");
+        validarColuna(indiceColunas, "horário");
+        validarColuna(indiceColunas, "manobra");
+        validarColuna(indiceColunas, "berço");
+        validarColuna(indiceColunas, "navio");
+        validarColuna(indiceColunas, "situação");
+            
+        /*
+         * ===== PASSO 2: Ler linhas de dados =====
          */
         for (int i = 1; i < linhas.size(); i++) {
 
-            Element linha = linhas.get(i);
+            Elements colunas = linhas.get(i).select("td");
 
-            // Seleciona todas as colunas da linha
-            Elements colunas = linha.select("td");
-
-            /*
-             * A tabela completa tem 11 colunas:
-             * 0 Data
-             * 1 Horário
-             * 2 Manobra
-             * 3 Berço
-             * 4 Bordo
-             * 5 Navio
-             * 6 Rota
-             * 7 Loa
-             * 8 Boca
-             * 9 Calado
-             * 10 Situação
-             *
-             * Se tiver menos que isso, ignoramos.
-             */            
-            if (colunas.size() < 11) {
+            if (colunas.isEmpty()) {
                 continue;
             }
 
-            // Extraímos apenas as colunas que interessam
-            String data = colunas.get(0).text().trim();
-            String horario = colunas.get(1).text().trim();
-            String manobra = colunas.get(2).text().trim();
-            String berco = colunas.get(3).text().trim();
-            String navio = colunas.get(5).text().trim();
-            String situacao = colunas.get(10).text().trim();
+            String data = pegar(colunas, indiceColunas, "data");
+            String horario = pegar(colunas, indiceColunas, "horário");
+            String manobra = pegar(colunas, indiceColunas, "manobra");
+            String berco = pegar(colunas, indiceColunas, "berço");
+            String navio = pegar(colunas, indiceColunas, "navio");
+            String situacao = pegar(colunas, indiceColunas, "situação");
 
-            // Criamos o objeto representando essa linha
-            NavioMovimentacao movimentacao = new NavioMovimentacao(
-                data,
-                horario,
-                manobra,
-                berco,
-                navio,
-                situacao
+            movimentacoes.add(
+                new NavioMovimentacao(
+                    data,
+                    horario,
+                    manobra,
+                    berco,
+                    navio,
+                    situacao
+                )
             );
-
-            // Adicionamos na lista final
-            movimentacoes.add(movimentacao);
-        
         }
 
         return movimentacoes;
     }
+
+    /**
+     * Normaliza texto para evitar problemas com maiúsculas/minúsculas.
+     */
+    private String normalizar(String texto) {
+        return texto.trim().toLowerCase();
+    }
+
+    /**
+     * Garante que a coluna obrigatória existe.
+     * Se não existir, falha explicitamente.
+     */
+    private void validarColuna(Map<String, Integer> mapa, String coluna) {
+        if (!mapa.containsKey(coluna)) {
+            throw new IllegalStateException(
+                    "Coluna obrigatória não encontrada: " + coluna
+            );
+        }
+    }
+
+        /**
+     * Extrai valor da coluna dinamicamente pelo nome.
+     */
+    private String pegar(Elements colunas,
+                         Map<String, Integer> mapa,
+                         String nomeColuna) {
+
+        Integer indice = mapa.get(nomeColuna);
+
+        if (indice == null || indice >= colunas.size()) {
+            return "";
+        }
+
+        return colunas.get(indice).text().trim();
+    }
+    
+    /**
+     * Extrai valor da coluna dinamicamente pelo nome.
+     */
+    private String pegar(Elements colunas,
+                         Map<String, Integer> mapa,
+                         String nomeColuna) {
+
+        Integer indice = mapa.get(nomeColuna);
+
+        if (indice == null || indice >= colunas.size()) {
+            return "";
+        }
+
+        return colunas.get(indice).text().trim();
+    }
+
 }
