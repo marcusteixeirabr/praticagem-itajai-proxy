@@ -6,6 +6,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -69,11 +70,11 @@ public class HtmlParser {
          * Se não existirem, falhamos de forma explícita.
          */
         validarColuna(indiceColunas, "data");
-        validarColuna(indiceColunas, "horário");
+        validarColuna(indiceColunas, "horario");
         validarColuna(indiceColunas, "manobra");
-        validarColuna(indiceColunas, "berço");
+        validarColuna(indiceColunas, "berco");
         validarColuna(indiceColunas, "navio");
-        validarColuna(indiceColunas, "situação");
+        validarColuna(indiceColunas, "situacao");
             
         /*
          * ===== PASSO 2: Ler linhas de dados =====
@@ -87,11 +88,11 @@ public class HtmlParser {
             }
 
             String data = pegar(colunas, indiceColunas, "data");
-            String horario = pegar(colunas, indiceColunas, "horário");
+            String horario = pegar(colunas, indiceColunas, "horario");
             String manobra = pegar(colunas, indiceColunas, "manobra");
-            String berco = pegar(colunas, indiceColunas, "berço");
+            String berco = pegar(colunas, indiceColunas, "berco");
             String navio = pegar(colunas, indiceColunas, "navio");
-            String situacao = pegar(colunas, indiceColunas, "situação");
+            String situacao = pegar(colunas, indiceColunas, "situacao");
 
             movimentacoes.add(
                 new NavioMovimentacao(
@@ -131,11 +132,11 @@ public class HtmlParser {
 
             // Verificamos de contém todas as colunas essenciais
             if (nomes.contains("data") &&
-                nomes.contains("horário") &&
+                nomes.contains("horario") &&
                 nomes.contains("manobra") &&
-                nomes.contains("berço") &&
+                nomes.contains("berco") &&
                 nomes.contains("navio") &&
-                nomes.contains("situação")) {
+                nomes.contains("situacao")) {
                 
                 return tabela;
             }
@@ -145,10 +146,23 @@ public class HtmlParser {
     }
 
     /**
-     * Normaliza texto para evitar problemas com maiúsculas/minúsculas.
+     * Normaliza texto para evitar problemas com:
+     * - Acentuação
+     * - Maiúsculas/minúsculas
+     * - Espaços extras
      */
     private String normalizar(String texto) {
-        return texto.trim().toLowerCase();
+        
+        if (texto == null) {
+            return "";
+        }
+
+        // Remove acentos
+        String semAcento = Normalizer.normalize(texto, Normalizer.Form.NFD)
+            .replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
+
+        // Remove espaços extras e converte para minúsculas
+        return semAcento.trim().toLowerCase();
     }
 
     /**
