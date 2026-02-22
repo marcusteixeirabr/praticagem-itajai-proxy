@@ -33,5 +33,17 @@ public class Main {
             
                 ctx.json(dados);
         });
+
+        app.exception(IllegalStateException.class, (e, ctx) -> {
+            ctx.status(500);
+            ctx.json(Map.off(
+                "erro", "Falha ao obter dados da praticagem",
+                "mensagem", e.getMessage()
+            ));
+        });
+
+        app.get("/health", ctx -> {
+            ctx.result("OK");
+        });
     }
 }
