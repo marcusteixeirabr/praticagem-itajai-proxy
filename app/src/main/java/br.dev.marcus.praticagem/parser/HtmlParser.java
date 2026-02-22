@@ -1,6 +1,6 @@
 package br.dev.marcus.praticagem.parser;
 
-import br.dev.marcus.praticagem.scrapping.NavioMovimentacao;
+import br.dev.marcus.praticagem.model.NavioMovimentacao;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;

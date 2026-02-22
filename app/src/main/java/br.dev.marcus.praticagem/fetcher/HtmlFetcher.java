@@ -54,8 +54,8 @@ public class HtmlFetcher {
             }
         }
 
-                logger.error("Erro ao buscar HTML da URL: {}", url, e);
-                throw new IllegalStateException("Falha ao buscar HTML remoto", e);
+                logger.error("Erro ao buscar HTML da URL: {}", url);
+                throw new IllegalStateException("Erro inesperado no fetch");
     }
 }
 

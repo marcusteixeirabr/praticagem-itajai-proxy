@@ -1,5 +1,9 @@
 package br.dev.marcus.praticagem.service;
 
+import br.dev.marcus.praticagem.fetcher.HtmlFetcher;
+import br.dev.marcus.praticagem.parser.HtmlParser;
+import br.dev.marcus.praticagem.model.NavioMovimentacao;
+
 import org.jsoup.nodes.Document;
 import java.util.List;
 
