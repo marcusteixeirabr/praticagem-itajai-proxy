@@ -23,18 +23,39 @@ public class HtmlFetcher {
 
     public Document fetch() {
 
-        try {
-            logger.info("Buscando HTML da URL: {}", url);
+        int tentativas = 3;
+        int tentativaAtual = 0;
 
-            return Jsoup.connect(url)
-                .timeout(timeoutMillis)
-                .userAgent("Mozilla/5.0 ")
-                .get();
+        while (tentativaAtual < tentativas) {
 
-        } catch (IOException e) {
-            logger.error("Erro ao buscar HTML da URL: {}", url, e);
-            throw new IllegalStateException("Falha ao buscar HTML remoto", e);
+            try {
+                tentativaAtual++;
+
+                logger.info("Tentativa {} de buscar HTML da URL: {}", tentativaAtual, url);
+
+                return Jsoup.connect(url)
+                    .timeout(timeoutMillis)
+                    .userAgent("Mozilla/5.0 ")
+                    .get();
+
+            } catch (IOException e) {
+
+                logger.warn("Falha na tentativa {}", tentativaAtual);
+
+                if (tentativaAtual >= tentativas) {
+                    logger.error("Todas as tentativas falharam para URL: {}", url);
+                    throw new IllegalStateException(
+                        "Falha após múltiplas tentativas", e);
+                }
+
+                try {
+                    Thread.sleep(2000); // espera 2 segundos antes de tentar novamente
+                } catch (InterruptedException ignored) {}
+            }
         }
-    }
 
+                logger.error("Erro ao buscar HTML da URL: {}", url, e);
+                throw new IllegalStateException("Falha ao buscar HTML remoto", e);
+    }
 }
+
