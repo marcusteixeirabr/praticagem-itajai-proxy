@@ -1,7 +1,7 @@
 package br.dev.marcus.praticagem;
 
-import br.dev.marcus.praticagem.scrapping.HtmlParser;
-import br.dev.marcus.praticagem.scrapping.NavioMovimentacao;
+import br.dev.marcus.praticagem.parser.HtmlParser;
+import br.dev.marcus.praticagem.model.NavioMovimentacao;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -169,6 +169,18 @@ public class HtmlParserTest {
 
         assertEquals(1, resultado.size());
     }
+    
+    @Test
+    void deveFalharSeHtmlForInvalido() {
 
+        String html = "<html><body><h1>Teste</h1></body></html>";
+
+        Document document = Jsoup.parse(html);
+
+        HtmlParser parser = new HtmlParser();
+
+        assertThrows(IllegalStateException.class,
+                () -> parser.parse(document));
+    }
 
 }
