@@ -37,6 +37,11 @@ public class HtmlFetcher {
                     .timeout(timeoutMillis)
                     .userAgent("Mozilla/5.0 ")
                     .get();
+            
+            } catch (IllegalArgumentException e) {
+                // URL inválida → erro de configuração → não adianta retry
+                logger.error("URL malformada: {}", url, e);
+                throw new IllegalStateException("URL configurada é inválida", e);
 
             } catch (IOException e) {
 

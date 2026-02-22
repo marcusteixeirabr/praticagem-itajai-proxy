@@ -29,20 +29,20 @@ public class Main {
             config.showJavalinBanner = false;
         }).start(7000);
 
-        app.get("/movimentacoes", ctx -> {
-
-            List<NavioMovimentacao> dados =
-                service.buscarMovimentacoes();
-            
-                ctx.json(dados);
-        });
-
         app.exception(IllegalStateException.class, (e, ctx) -> {
             ctx.status(500);
             ctx.json(Map.of(
                 "erro", "Falha ao obter dados da praticagem",
                 "mensagem", e.getMessage()
             ));
+        });
+
+        app.get("/movimentacoes", ctx -> {
+
+            List<NavioMovimentacao> dados =
+                service.buscarMovimentacoes();
+            
+                ctx.json(dados);
         });
 
         app.get("/health", ctx -> {
