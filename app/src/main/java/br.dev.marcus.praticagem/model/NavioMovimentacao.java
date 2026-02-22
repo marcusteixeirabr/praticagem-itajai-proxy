@@ -1,4 +1,4 @@
-package br.dev.marcus.praticagem.scrapping;
+package br.dev.marcus.praticagem.model;
 
  /**
  * Representa uma única linha da tabela de movimentação.

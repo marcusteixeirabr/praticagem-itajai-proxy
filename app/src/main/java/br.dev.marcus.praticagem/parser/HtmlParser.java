@@ -1,4 +1,4 @@
-package br.dev.marcus.praticagem.scrapping;
+package br.dev.marcus.praticagem.parser;
 
 import br.dev.marcus.praticagem.scrapping.NavioMovimentacao;
 

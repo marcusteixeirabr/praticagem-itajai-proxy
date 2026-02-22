@@ -1,4 +1,4 @@
-package br.dev.marcus.praticagem.scrapping;
+package br.dev.marcus.praticagem.fetcher;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
