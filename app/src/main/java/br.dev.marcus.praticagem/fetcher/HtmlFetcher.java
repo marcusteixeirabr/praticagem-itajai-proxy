@@ -122,19 +122,19 @@ public class HtmlFetcher {
      *   <li>30000ms (30s): Sites lentos ou conexão instável</li>
      * </ul>
      */
-    private final int timeoutMillis;
+    private final int timeout;
 
     /**
      * Número máximo de tentativas antes de desistir.
      * Atualmente fixo em 3, mas poderia ser configurável no futuro.
      */
-    private static final int MAX_TENTATIVAS = 3;
+    private final int maxRetries;
 
     /**
      * Tempo de espera entre tentativas, em milissegundos.
      * Backoff fixo de 2 segundos para dar tempo do servidor se recuperar.
      */
-    private static final int BACKOFF_MILLIS = 2000;
+    private final int retryBackoff;
 
 /**
  * Identificação do bot nos headers HTTP (User-Agent).
@@ -161,9 +161,11 @@ public class HtmlFetcher {
      * 
      * @see #fetch()
      */
-    public HtmlFetcher(String url, int timeoutMillis) {
+    public HtmlFetcher(String url, int timeout, int maxRetries, int retryBackoff) {
         this.url = url;
-        this.timeoutMillis = timeoutMillis;
+        this.timeout = timeout;
+        this.maxRetries = maxRetries;
+        this.retryBackoff = retryBackoff;
     }
 
     /**
@@ -242,21 +244,21 @@ public class HtmlFetcher {
 
         int tentativaAtual = 0;
 
-        // Loop de retry: tenta até MAX_TENTATIVAS vezes
-        while (tentativaAtual < MAX_TENTATIVAS) {
+        // Loop de retry: tenta até maxRetries vezes
+        while (tentativaAtual < maxRetries) {
 
             try {
                 tentativaAtual++;
 
                 logger.info(
                     "Tentativa {}/{} de buscar HTML da URL: {}",
-                    tentativaAtual, MAX_TENTATIVAS, url
+                    tentativaAtual, maxRetries, url
                 );
 
                 // ===== EXECUÇÃO DA REQUISIÇÃO HTTP =====
                 // Jsoup.connect() cria a conexão e .get() executa a requisição
                 Document document = Jsoup.connect(url)
-                    .timeout(timeoutMillis)          // Timeout configurável
+                    .timeout(timeout)          // Timeout configurável
                     .userAgent(USER_AGENT)           // Identifica o cliente
                     .get();                          // Executa GET e parseia HTML
                 
@@ -287,22 +289,22 @@ public class HtmlFetcher {
                 
                 logger.warn(
                     "Falha na tentativa {}/{}: {} - {}",
-                    tentativaAtual, MAX_TENTATIVAS,
+                    tentativaAtual, maxRetries,
                     e.getClass().getSimpleName(), e.getMessage()
                 );
 
                 // Se foi a última tentativa, não adianta mais retentar
-                if (tentativaAtual >= MAX_TENTATIVAS) {
+                if (tentativaAtual >= maxRetries) {
                     logger.error(
                         "Todas as {} tentativas falharam para URL: {}. " +
                         "Possíveis causas: site fora do ar, problema de rede, firewall, timeout muito curto.",
-                        MAX_TENTATIVAS, url
+                        maxRetries, url
                     );
 
                     throw new IllegalStateException(
                         String.format(
                             "Falha ao conectar após %d tentativas: %s",
-                            MAX_TENTATIVAS, e.getMessage()
+                            maxRetries, e.getMessage()
                         ),
                         e
                     );
@@ -314,9 +316,9 @@ public class HtmlFetcher {
                 try {
                     logger.info(
                         "Aguardando {}ms antes da próxima tentativa...",
-                        BACKOFF_MILLIS
+                        retryBackoff
                     );
-                    Thread.sleep(BACKOFF_MILLIS);
+                    Thread.sleep(retryBackoff);
 
                 } catch (InterruptedException ie) {
                     // Se a thread for interrompida durante o sleep,
@@ -362,8 +364,8 @@ public class HtmlFetcher {
      * 
      * @return Timeout em ms usado nas requisições HTTP
      */
-    public int getTimeoutMillis() {
-        return timeoutMillis;
+    public int getTimeout() {
+        return timeout;
     }
 
     /**
@@ -371,8 +373,8 @@ public class HtmlFetcher {
      * 
      * @return Número de tentativas antes de desistir (atualmente 3)
      */
-    public static int getMaxTentativas() {
-        return MAX_TENTATIVAS;
+    public int getMaxRetries() {
+        return maxRetries;
     }
 
     /**
@@ -380,8 +382,8 @@ public class HtmlFetcher {
      * 
      * @return Backoff em ms entre tentativas de retry (atualmente 2000ms)
      */
-    public static int getBackoffMillis() {
-        return BACKOFF_MILLIS;
+    public int getRetryBackoff() {
+        return retryBackoff;
     }
 
 }

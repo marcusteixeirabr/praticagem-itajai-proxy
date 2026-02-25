@@ -165,22 +165,24 @@ public class Main {
             "praticagem.url",
             "https://praticoszp21.com.br/movimentacao-de-navios/"
         );
-
-        int timeout = config.getInt("praticagem.timeout", 10000);
-        
+        int timeout = config.getInt("praticagem.timeout", 10000);        
         int porta = config.getInt("server.port", 7000);
+        int maxRetries = config.getInt("praticagem.maxRetries", 3);
+        int retryBackoff = config.getInt("praticagem.retryBackoff", 2000);
 
         // Log das configurações carregadas (útil para debug)
         logger.info("Configurações carregadas:");
         logger.info("  └─ URL: {}", url);
         logger.info("  └─ Timeout: {}ms", timeout);
         logger.info("  └─ Porta: {}", porta);
+        logger.info("  └─ Max Retries: {}", maxRetries);
+        logger.info("  └─ Retry Backoff: {}ms", retryBackoff);
 
         // ===== INICIALIZAÇÃO DE COMPONENTES =====
         // Padrão de injeção de dependências manual (simples e explícito)
         logger.info("Inicializando componentes...");
         
-        HtmlFetcher fetcher = new HtmlFetcher(url, timeout);
+        HtmlFetcher fetcher = new HtmlFetcher(url, timeout, maxRetries, retryBackoff);
         logger.debug("  ✓ HtmlFetcher criado");
         
         HtmlParser parser = new HtmlParser();
