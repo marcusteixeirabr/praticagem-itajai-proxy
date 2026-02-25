@@ -246,14 +246,16 @@ public class HtmlParser {
             );
 
             movimentacoes.add(movimentacao);
+
+            logger.debug(
+                    "Linha {} processada: Navio={}, Berço={}, Situação={}",
+                    i, navio, berco, situacao
+            );
         }
 
+        logger.info("Parsing concluído. {} movimentações encontradas", movimentacoes.size());
         return movimentacoes;
 
-        logger.debug(
-                "Linha {} processada: Navio={}, Berço={}, Situação={}",
-                i, navio, berco, situacao
-            );
     }
 
     /**

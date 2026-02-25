@@ -55,6 +55,9 @@ import java.util.Properties;
  */
 public class ConfigLoader {
 
+    /**
+     * Logger para registrar eventos da aplicação.
+     */
     private static final Logger logger = LoggerFactory.getLogger(ConfigLoader.class);
     
     /**
