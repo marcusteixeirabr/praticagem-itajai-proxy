@@ -158,7 +158,7 @@ public class MovimentacaoService {
      * <p>Este construtor implementa <i>constructor injection</i>, uma forma de
      * injeção de dependências que torna a classe facilmente testável.</p>
      * 
-     * <h3>Exemplo de Uso:</h3>
+     * <h4>Exemplo de Uso:</h4>
      * <pre>{@code
      * HtmlFetcher fetcher = new HtmlFetcher(
      *     "https://praticoszp21.com.br/movimentacao-de-navios/",
@@ -169,7 +169,7 @@ public class MovimentacaoService {
      * MovimentacaoService service = new MovimentacaoService(fetcher, parser);
      * }</pre>
      * 
-     * <h3>Para Testes Unitários:</h3>
+     * <h4>Para Testes Unitários:</h4>
      * <pre>{@code
      * // Cria mocks das dependências
      * HtmlFetcher fetcherMock = mock(HtmlFetcher.class);
@@ -211,7 +211,7 @@ public class MovimentacaoService {
      *   <li>Retorna a lista de {@link NavioMovimentacao} encontradas</li>
      * </ol>
      * 
-     * <h3>Fluxo de Execução Detalhado:</h3>
+     * <h4>Fluxo de Execução Detalhado:</h4>
      * <pre>
      * buscarMovimentacoes()
      *     │
@@ -236,7 +236,7 @@ public class MovimentacaoService {
      *     └─→ Retorna lista
      * </pre>
      * 
-     * <h3>Dados Retornados:</h3>
+     * <h4>Dados Retornados:</h4>
      * <p>Cada {@link NavioMovimentacao} contém:</p>
      * <ul>
      *   <li><b>data:</b> Data da movimentação (ex: "23/02/2026")</li>
@@ -247,7 +247,7 @@ public class MovimentacaoService {
      *   <li><b>situacao:</b> Status atual (ex: "Atracado", "Fundeado")</li>
      * </ul>
      * 
-     * <h3>Exemplo de Resultado:</h3>
+     * <h4>Exemplo de Resultado:</h4>
      * <pre>{@code
      * [
      *   NavioMovimentacao(
@@ -269,17 +269,17 @@ public class MovimentacaoService {
      * ]
      * }</pre>
      * 
-     * <h3>Performance:</h3>
+     * <h4>Performance:</h4>
      * <ul>
      *   <li><b>Melhor caso:</b> ~2-3 segundos (conexão rápida, site responsivo)</li>
      *   <li><b>Caso médio:</b> ~5-10 segundos (com 1-2 retries)</li>
      *   <li><b>Pior caso:</b> ~34 segundos (3 tentativas × 10s timeout + 2 × 2s backoff)</li>
      * </ul>
      * 
-     * <h3>Comportamento em Caso de Lista Vazia:</h3>
+     * <h4>Comportamento em Caso de Lista Vazia:</h4>
      * <p>Se a tabela existir mas estiver vazia, retorna lista vazia (não é erro).</p>
      * 
-     * <h3>Thread Safety:</h3>
+     * <h4>Thread Safety:</h4>
      * <p>Este método é thread-safe. Múltiplas threads podem chamá-lo simultaneamente
      * pois não compartilha estado mutável entre chamadas.</p>
      * 

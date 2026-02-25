@@ -115,8 +115,7 @@ public class ConfigLoader {
 
     /**
      * Busca valor de configuração com cascata de prioridades.
-     * 
-     * <h3>Ordem de busca:</h3>
+     * <h4>Ordem de busca:</h4>
      * <ol>
      *   <li>Variável de ambiente (ex: PRATICAGEM_URL)</li>
      *   <li>System property (ex: -Dpraticagem.url=...)</li>

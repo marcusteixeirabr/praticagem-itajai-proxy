@@ -37,6 +37,7 @@ import java.util.Map;
  * 
  * <h2>Endpoints Disponíveis</h2>
  * <table border="1">
+ * <caption>Endpoints Disponíveis</caption>
  *   <tr>
  *     <th>Método</th>
  *     <th>Endpoint</th>
@@ -81,6 +82,7 @@ import java.util.Map;
  * 
  * <h3>Configurações Disponíveis</h3>
  * <table border="1">
+ * <caption>Configurações Disponíveis</caption>
  *   <tr>
  *     <th>Propriedade</th>
  *     <th>Env Var</th>

@@ -27,6 +27,7 @@ import java.io.IOException;
  * <h2>Cenários de Falha</h2>
  * <p>A classe trata diferentes tipos de falha de forma adequada:</p>
  * <table border="1">
+ * <caption>Cenários de Falha</caption>
  *   <tr>
  *     <th>Tipo de Erro</th>
  *     <th>Comportamento</th>
@@ -156,8 +157,10 @@ public class HtmlFetcher {
      * chamada ao método {@link #fetch()}.</p>
      * 
      * @param url URL completa do site a ser acessado (ex: "https://example.com")
-     * @param timeoutMillis Timeout em milissegundos para a requisição HTTP.
+     * @param timeout Timeout em milissegundos para a requisição HTTP.
      *                      Valores típicos: 5000 (5s) a 30000 (30s)
+     * @param maxRetries Número máximo de tentativas antes de desistir (atualmente 3)
+     * @param retryBackoff Tempo de espera entre tentativas, em milissegundos
      * 
      * @see #fetch()
      */
@@ -175,7 +178,7 @@ public class HtmlFetcher {
      * Em caso de falhas temporárias (rede, timeout), faz até 3 tentativas
      * com intervalo de 2 segundos entre elas.</p>
      * 
-     * <h3>Algoritmo de Retry</h3>
+     * <h4>Algoritmo de Retry</h4>
      * <pre>
      * Para cada tentativa (1 a 3):
      *   1. Tenta conectar via Jsoup
@@ -187,7 +190,7 @@ public class HtmlFetcher {
      *   4. Se URL inválida → falha imediatamente (erro de config)
      * </pre>
      * 
-     * <h3>Configuração da Requisição</h3>
+     * <h4>Configuração da Requisição</h4>
      * <ul>
      *   <li><b>Timeout:</b> Valor configurado no construtor</li>
      *   <li><b>User-Agent:</b> "Mozilla/5.0" (identifica o cliente)</li>
@@ -195,8 +198,9 @@ public class HtmlFetcher {
      *   <li><b>Follow redirects:</b> Sim (comportamento padrão do Jsoup)</li>
      * </ul>
      * 
-     * <h3>Tratamento de Erros</h3>
+     * <h4>Tratamento de Erros</h4>
      * <table border="1">
+     * <caption>Tratamento de Erros</caption>
      *   <tr>
      *     <th>Exceção Capturada</th>
      *     <th>Causa Comum</th>
@@ -224,7 +228,7 @@ public class HtmlFetcher {
      *   </tr>
      * </table>
      * 
-     * <h3>Logs Gerados</h3>
+     * <h4>Logs Gerados</h4>
      * <ul>
      *   <li><b>INFO:</b> Cada tentativa de conexão</li>
      *   <li><b>WARN:</b> Falha em tentativa individual</li>

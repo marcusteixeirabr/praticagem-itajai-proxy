@@ -90,7 +90,7 @@ public class HtmlParser {
      * <p>Este é o método principal da classe. Ele coordena todo o processo de
      * parsing e garante que erros não quebrem a aplicação consumidora.</p>
      * 
-     * <h3>Comportamento em Caso de Erro</h3>
+     * <h4>Comportamento em Caso de Erro</h4>
      * <ul>
      *   <li><b>Tabela não encontrada:</b> Lança {@link IllegalStateException}</li>
      *   <li><b>Estrutura mudou:</b> Lança {@link IllegalStateException}</li>

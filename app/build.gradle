@@ -7,6 +7,7 @@
 
 plugins {
     // Apply the application plugin to add support for building a CLI application in Java.
+    id 'java'
     id 'application'
 }
 
@@ -45,6 +46,22 @@ application {
 tasks.named('test') {
     // Use JUnit Platform for unit tests.
     useJUnitPlatform()
+}
+
+// Configuração do JavaDoc
+javadoc {
+    options.encoding = 'UTF-8'
+    options.charSet = 'UTF-8'
+    options.author = true
+    options.version = true
+    options.links(
+        'https://docs.oracle.com/en/java/javase/17/docs/api/'
+    )
+}
+
+// Task para gerar JavaDoc
+tasks.named('javadoc') {
+    destinationDir = file("$buildDir/docs/javadoc")
 }
 
 jar {
