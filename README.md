@@ -122,8 +122,8 @@ java -version
 ### 1. Clone o repositório
 
 ```bash
-git clone https://github.com/seu-usuario/praticagem-api.git
-cd praticagem-api
+git clone https://github.com/marcusteixeirabr/praticagem-itajai-proxy.git
+cd praticagem-itajai-proxy
 ```
 
 ### 2. Compile o projeto
@@ -139,7 +139,7 @@ cd praticagem-api
 ./gradlew run
 
 # Opção 2: Usando JAR gerado
-java -jar build/libs/praticagem-api.jar
+java -jar app/build/libs/app.jar
 ```
 
 ### 4. Verifique se está funcionando
@@ -171,10 +171,10 @@ praticagem.url=https://praticoszp21.com.br/movimentacao-de-navios/
 praticagem.timeout=10000
 
 # Número máximo de tentativas em caso de falha
-praticagem.max.retries=3
+praticagem.maxRetries=3
 
 # Tempo de espera entre tentativas em milissegundos (2 segundos)
-praticagem.retry.backoff=2000
+praticagem.retryBackoff=2000
 
 # Porta do servidor HTTP
 server.port=7000
@@ -186,12 +186,12 @@ server.port=7000
 # Definir variáveis de ambiente
 export PRATICAGEM_URL=https://praticoszp21.com.br/movimentacao-de-navios/
 export PRATICAGEM_TIMEOUT=15000
-export PRATICAGEM_MAX_RETRIES=5
-export PRATICAGEM_RETRY_BACKOFF=3000
+export PRATICAGEM_MAXRETRIES=5
+export PRATICAGEM_RETRYBACKOFF=3000
 export SERVER_PORT=8080
 
 # Executar aplicação
-java -jar praticagem-api.jar
+java -jar app.jar
 ```
 
 ### Arquivo .env (Recomendado para produção)
@@ -202,8 +202,8 @@ Crie um arquivo `.env` na mesma pasta do JAR:
 # .env
 export PRATICAGEM_URL=https://praticoszp21.com.br/movimentacao-de-navios/
 export PRATICAGEM_TIMEOUT=15000
-export PRATICAGEM_MAX_RETRIES=5
-export PRATICAGEM_RETRY_BACKOFF=3000
+export PRATICAGEM_MAXRETRIES=5
+export PRATICAGEM_RETRYBACKOFF=3000
 export SERVER_PORT=80
 ```
 
@@ -211,7 +211,7 @@ Carregue e execute:
 
 ```bash
 source .env
-java -jar praticagem-api.jar
+java -jar app.jar
 ```
 
 ### Tabela de Configurações
@@ -220,8 +220,8 @@ java -jar praticagem-api.jar
 |-------------|---------|--------|-----------|
 | `praticagem.url` | `PRATICAGEM_URL` | https://praticoszp21... | URL do site |
 | `praticagem.timeout` | `PRATICAGEM_TIMEOUT` | 10000 | Timeout HTTP (ms) |
-| `praticagem.max.retries` | `PRATICAGEM_MAX_RETRIES` | 3 | Máx. de tentativas |
-| `praticagem.retry.backoff` | `PRATICAGEM_RETRY_BACKOFF` | 2000 | Espera entre tentativas (ms) |
+| `praticagem.maxRetries` | `PRATICAGEM_MAXRETRIES` | 3 | Máx. de tentativas |
+| `praticagem.retryBackoff` | `PRATICAGEM_RETRYBACKOFF` | 2000 | Espera entre tentativas (ms) |
 | `server.port` | `SERVER_PORT` | 7000 | Porta do servidor |
 
 ---
@@ -245,7 +245,7 @@ curl http://localhost:7000/movimentacoes
 ./gradlew build
 
 # 2. Copie o JAR para o servidor
-scp build/libs/praticagem-api.jar usuario@servidor:/opt/praticagem/
+scp app/build/libs/praticagem-api.jar usuario@servidor:/opt/praticagem/
 
 # 3. No servidor, configure as variáveis
 nano /opt/praticagem/.env
@@ -253,7 +253,7 @@ nano /opt/praticagem/.env
 # 4. Execute
 cd /opt/praticagem
 source .env
-java -jar praticagem-api.jar
+java -jar app.jar
 ```
 
 ---
@@ -368,10 +368,10 @@ O projeto possui documentação JavaDoc completa e profissional.
 
 ```bash
 # Linux/Mac
-open build/docs/javadoc/index.html
+open app/build/docs/javadoc/index.html
 
 # Windows
-start build/docs/javadoc/index.html
+start app/build/docs/javadoc/index.html
 ```
 
 A documentação gerada incluirá:
@@ -441,11 +441,11 @@ WorkingDirectory=/opt/praticagem
 Environment="PRATICAGEM_URL=https://praticoszp21.com.br/movimentacao-de-navios/"
 Environment="SERVER_PORT=80"
 Environment="PRATICAGEM_TIMEOUT=15000"
-Environment="PRATICAGEM_MAX_RETRIES=5"
-Environment="PRATICAGEM_RETRY_BACKOFF=3000"
+Environment="PRATICAGEM_MAXRETRIES=5"
+Environment="PRATICAGEM_RETRYBACKOFF=3000"
 
 # Comando para executar
-ExecStart=/usr/bin/java -jar /opt/praticagem/praticagem-api.jar
+ExecStart=/usr/bin/java -jar /opt/praticagem/app.jar
 
 # Reinicia automaticamente se cair
 Restart=always
@@ -477,7 +477,7 @@ sudo journalctl -u praticagem -f
 ### Opção 2: Executar em Background (nohup)
 
 ```bash
-nohup java -jar praticagem-api.jar > praticagem.log 2>&1 &
+nohup java -jar app.jar > app.log 2>&1 &
 ```
 
 ### Opção 3: Script de Início
@@ -491,7 +491,7 @@ Crie `start.sh`:
 source /opt/praticagem/.env
 
 # Inicia aplicação em background
-nohup java -jar /opt/praticagem/praticagem-api.jar \
+nohup java -jar /opt/praticagem/app.jar \
   > /opt/praticagem/logs/app.log 2>&1 &
 
 # Salva PID
@@ -521,13 +521,13 @@ chmod +x start.sh
 
 ```bash
 ./gradlew test
-open build/reports/tests/test/index.html
+open app/build/reports/tests/test/index.html
 ```
 
 ### Estrutura de Testes
 
 ```
-src/test/java/
+app/src/test/java/
 └── br/dev/marcus/praticagem/
     ├── fetcher/
     │   └── HtmlFetcherTest.java
@@ -542,8 +542,8 @@ src/test/java/
 ## 📁 Estrutura do Projeto
 
 ```
-praticagem-api/
-├── src/
+praticagem-itajai-proxy/
+├── app/src/
 │   ├── main/
 │   │   ├── java/
 │   │   │   └── br/dev/marcus/praticagem/
