@@ -22,6 +22,13 @@ dependencies {
 
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
+    // Mockito para mocking
+    testImplementation 'org.mockito:mockito-core:5.8.0'
+    testImplementation 'org.mockito:mockito-junit-jupiter:5.8.0'
+    
+    // Para MockedStatic (Mockito inline)
+    testImplementation 'org.mockito:mockito-inline:5.2.0'
+
     // This dependency is used by the application.
     implementation libs.guava
     implementation 'org.jsoup:jsoup:1.17.2'

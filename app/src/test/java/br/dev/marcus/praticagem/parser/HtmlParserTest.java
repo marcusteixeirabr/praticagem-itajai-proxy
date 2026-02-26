@@ -1,4 +1,4 @@
-package br.dev.marcus.praticagem;
+package br.dev.marcus.praticagem.parser;
 
 import br.dev.marcus.praticagem.parser.HtmlParser;
 import br.dev.marcus.praticagem.model.NavioMovimentacao;
