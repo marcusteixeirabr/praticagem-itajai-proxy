@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"br.dev.marcus.praticagem"},{"l":"br.dev.marcus.praticagem.config"},{"l":"br.dev.marcus.praticagem.fetcher"},{"l":"br.dev.marcus.praticagem.model"},{"l":"br.dev.marcus.praticagem.parser"},{"l":"br.dev.marcus.praticagem.service"}];updateSearchResults();
