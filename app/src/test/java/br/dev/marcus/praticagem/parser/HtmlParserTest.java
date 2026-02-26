@@ -1,16 +1,18 @@
 package br.dev.marcus.praticagem.parser;
 
-import br.dev.marcus.praticagem.parser.HtmlParser;
-import br.dev.marcus.praticagem.model.NavioMovimentacao;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import java.io.InputStream;
+import java.util.List;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.junit.jupiter.api.Test;
 
-import java.io.InputStream;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
+import br.dev.marcus.praticagem.model.NavioMovimentacao;
 
 public class HtmlParserTest {
     @Test
