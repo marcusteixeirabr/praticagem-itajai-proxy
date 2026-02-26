@@ -161,7 +161,7 @@ A aplicação usa um sistema de configuração em **cascata** com a seguinte ord
 
 ### Arquivo application.properties
 
-Localizado em `src/main/resources/application.properties`:
+Localizado em `app/src/main/resources/application.properties`:
 
 ```properties
 # URL do site de praticagem
