@@ -35,6 +35,8 @@ import java.util.Properties;
  * String url = config.get("praticagem.url");
  * int timeout = config.getInt("praticagem.timeout", 10000);
  * int port = config.getInt("server.port", 7000);
+ * int maxRetries = config.getInt("praticagem.maxRetries", 3);
+ * int retryBackoff = config.getInt("praticagem.retryBackoff", 2000);
  * 
  * // Em produção, sobrescrever via env var:
  * // export PRATICAGEM_URL=https://outro-site.com
