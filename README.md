@@ -614,7 +614,7 @@ Este projeto está licenciado sob a Licença MIT - veja o arquivo [LICENSE](LICE
 - [Javalin](https://javalin.io/) - Framework web leve e eficiente
 - [Jsoup](https://jsoup.org/) - Parser HTML excepcional
 - [UNIVALI](https://www.univali.br/) - Universidade do Vale do Itajaí
-- Praticagem ZP-21 - Fonte dos dados de movimentação
+- [Praticagem ZP-21](https://praticoszp21.com.br/) - Fonte dos dados de movimentação
 
 ---
 
