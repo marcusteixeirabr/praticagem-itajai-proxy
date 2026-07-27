@@ -1,0 +1,47 @@
+{
+  "name": "Java 21 + Gradle (Javalin/Jsoup/Jackson)",
+
+  "image": "mcr.microsoft.com/devcontainers/java:1-21-bookworm",
+
+  "features": {
+    "ghcr.io/devcontainers/features/java:1": {
+      "version": "21",
+      "gradleVersion": "8.7"
+    },
+    "ghcr.io/devcontainers/features/git:1": {},
+    "ghcr.io/devcontainers/features/github-cli:1": {}
+  },
+
+  "forwardPorts": [7000],
+  "portsAttributes": {
+    "7000": {
+      "label": "API Praticagem",
+      "onAutoForward": "notify"
+    }
+  },
+
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "java.configuration.updateBuildConfiguration": "automatic"
+      },
+      "extensions": [
+        "vscjava.vscode-java-pack",
+        "vscjava.vscode-gradle",
+        "redhat.java"
+      ]
+    }
+  },
+
+  "remoteUser": "vscode",
+
+  "mounts": [
+    "source=/home/marcus/.ssh/agent.sock,target=/ssh-agent,type=bind"
+  ],
+
+  "containerEnv": {
+    "SSH_AUTH_SOCK": "/ssh-agent"
+  },
+
+  "postCreateCommand": "sudo chown -R vscode:vscode /workspaces && ./gradlew build --no-daemon"
+}
